@@ -22,8 +22,14 @@ implemented monomial quotient.
 The prefix may read x but not y.  The continuation may read y but not x.  At the
 barrier at most M natural-number words persist in fast state.  Any additional
 natural word that crosses the barrier must be written once to slow storage and
-read once later, at one transfer per operation.  Two transient arithmetic
-buffers are available within a phase and are cleared at the barrier.
+read once later, at one transfer per operation.  Exactly two transient buffers,
+T0 and T1, are available.  In the prefix T0 accumulates one left summary while
+T1 is unused.  The barrier clears both.  In the continuation T0 is the sole
+output accumulator and T1 holds one right linear form; a fast or slow persistent
+summary is supplied directly to a fused multiply-add, and a slow summary is read
+exactly once by that operation.  The append-only output is unreadable and is not
+extra machine state.  This convention covers M=0 and arbitrarily many factors
+without a hidden third buffer.
 
 Control and addresses are static.  Arithmetic consists of natural constants,
 addition, and multiplication.  There is no subtraction, division, comparison,
@@ -95,17 +101,19 @@ word transfers.
 
 ## 6. Matching factor compiler
 
-Given `A=UV` of width r, the prefix computes
-
-    s_l = sum_i U_il x_i
-
-for l=1,...,r.  It retains any min(M,r) summaries in fast words and writes the
-rest once.  The continuation reloads each spilled summary once and emits
-
-    sum_l s_l (sum_j V_lj y_j).
+Given any checked `A=UV` of width r, the prefix resets T0, executes the static
+multiply-adds for one `s_l`, and copies that completed value to a fixed fast or
+slow slot.  After the barrier clears T0/T1, the continuation initializes T0 to
+zero.  For each factor it accumulates `t_l=sum_j V_lj y_j` in T1 and performs
+one fused `T0 <- T0 + s_l*T1`, reading a slow `s_l` exactly once when necessary.
+The final T0 is copied to the append-only output.
 
 Distributivity gives exactly f_A.  The transfer cost is
-`2*max(0,r-M)`; using a minimum-width factorization gives the lower bound.
+`2*max(0,r-M)`, so an arbitrary factorization proves a feasible upper bound.
+It is optimal only when an independent lower-bound certificate establishes
+`r=rho_N(A)`.  For example, the all-ones 2x2 matrix has a valid width-two
+factorization `I_2 J_2`, but its rank-one all-ones factorization proves that the
+width-two schedule is not optimal.  This regression is retained explicitly.
 
 ### Theorem I2 (exact positive-word cost)
 
@@ -129,8 +137,19 @@ along the witness.  Unit atoms guarantee reachability.
 
 The retained 64 instances include all binary two-by-two matrices, selected
 nonbinary two-by-two and binary three-by-three cases, and identity matrices of
-orders one through six.  They generate 7,378 checked Bellman inequalities and
-10,743 numeric comparisons of extracted schedules with direct bilinear
-evaluation.  A separate natural-polynomial normalizer checks all 64 symbolic
-factor identities.  These bounded certificates support the implementation and
-examples; the general lower bound is Lemma I1.
+orders one through six.  Before arithmetic, both the rank checker and the
+semiring kernel require genuine nonnegative Python integers; fractions,
+Booleans, strings, negative factors, and non-integer matrices are rejected.  A
+deliberately isolated checker retaining the unsafe `int()` coercion accepts the
+rank-058 mutation `u=[0.5], v=[2]`; both current checkers reject the same packet
+before arithmetic, closing that silent-truncation risk.  Double-negative factors
+are rejected before multiplication.
+
+The packets generate 7,378 checked Bellman inequalities and 10,743 explicit
+two-phase schedules.  An independent checker executes 313,123 events, including
+13,794 fixed-slot writes and 13,794 one-shot restores, and compares every final
+value with direct bilinear evaluation.  Four event mutations—missing write,
+wrong address, duplicate restore, and out-of-range access—are rejected.  A
+separate natural-polynomial normalizer checks all 64 symbolic factor identities.
+These bounded certificates support the implementation and examples; the
+general lower bound is Lemma I1.

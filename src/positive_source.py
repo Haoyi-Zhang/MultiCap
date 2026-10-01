@@ -7,18 +7,27 @@ an executable admission front end for the matrix theorem, not a general SQL IR.
 from __future__ import annotations
 
 
-def const(c):return {'op':'const','value':int(c)}
-def xvar(i):return {'op':'x','index':int(i)}
-def yvar(j):return {'op':'y','index':int(j)}
+def _nat(value,label):
+    if type(value) is not int or value<0:raise ValueError(f'{label} must be a natural integer')
+    return value
+
+def const(c):return {'op':'const','value':_nat(c,'constant')}
+def xvar(i):return {'op':'x','index':_nat(i,'left variable index')}
+def yvar(j):return {'op':'y','index':_nat(j,'right variable index')}
 def add(a,b):return {'op':'add','left':a,'right':b}
 def mul(a,b):return {'op':'mul','left':a,'right':b}
 
 
 def canonical_source(matrix):
-    m=len(matrix);n=len(matrix[0]);expr=const(0)
+    if not isinstance(matrix,(list,tuple)) or not matrix or not isinstance(matrix[0],(list,tuple)) or not matrix[0]:
+        raise ValueError('nonempty rectangular matrix required')
+    n=len(matrix[0])
+    if any(not isinstance(row,(list,tuple)) or len(row)!=n for row in matrix):
+        raise ValueError('rectangular matrix required')
+    m=len(matrix);expr=const(0)
     for i in range(m):
         for j in range(n):
-            c=int(matrix[i][j])
+            c=_nat(matrix[i][j],f'matrix[{i}][{j}]')
             if c:
                 expr=add(expr,mul(mul(const(c),xvar(i)),yvar(j)))
     return {'left_tags':m,'right_tags':n,'expression':expr}

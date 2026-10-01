@@ -58,7 +58,7 @@ reads. If the second numerator is negative, the first bound dominates, so the di
 
 For n=m=M=3 the coarse counting bound is 7. The retained certificate cache-07 proves the exact value 8, using 136 positive potential states and 748 checked local inequalities. Its physical witness loads occurrence identifiers 0,1,3,2,4,5,0,1, with evictions absent,absent,absent,0,1,3,2,0. Here identifiers 0,1,2 denote R and 3,4,5 denote S. It emits all nine pairs. The exact gap of one refutes tightness of this counting argument on that instance; it does not refute the validity of the bound or establish a general closed form for M=3.
 
-The first unsymmetrized diagnostic independently found distance 8 by breadth-first search with 2,916 discovered states and 25,548 transitions. Its record is retained as pilot.json. The quotient search found 144 states and examined 1,198 transitions. These are implementation-specific enumeration counts, not query-execution cost or claims of an asymptotic optimization gain.
+A current unsymmetrized recomputation finds distance 8 by breadth-first search with 2,916 discovered states and 25,548 transitions.  The earlier raw pilot record was not retained; `results/pilot.json` states this provenance and must not be presented as the original run.  `run.py check` recomputes and matches all deterministic pilot fields while ignoring CPU/RSS measurements.  The quotient search found 144 states and examined 1,198 transitions.  These are implementation-specific enumeration counts, not query-execution cost or claims of an asymptotic optimization gain.
 
 ## Direct lower proof for the 3 by 3 instance
 

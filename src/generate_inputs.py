@@ -58,3 +58,7 @@ residual=[]
 for mask in range(16):
     residual.append({'id':f'residual-{mask:02d}','table':[[((mask>>(2*x+y))&1) for y in range(2)] for x in range(2)]})
 (root/'inputs'/'residual_cases.json').write_text(json.dumps(residual,indent=2)+'\n')
+(root/'inputs'/'rectangle_negative.json').write_text(json.dumps({
+    'id':'rectangle-overlap-7-vs-8',
+    'construction':'two overlapping 2x2 rectangles in a 3x3 grid'
+},indent=2,sort_keys=True)+'\n')

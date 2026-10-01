@@ -1,9 +1,0 @@
-{
-  "doi_records": 0,
-  "openalex_resolved": 0,
-  "openalex_unresolved": 0,
-  "retracted_flags": [],
-  "citation_occurrences": 113,
-  "unique_cited_keys": 81,
-  "interpretation": "Existence, metadata identity, and retraction flags are machine-checked where registries resolve. Citation-context correctness remains a scholarly judgment; the ledger exposes every context for review. Citation counts are not used as a quality criterion."
-}

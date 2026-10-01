@@ -52,6 +52,8 @@ Define F(input)=F(empty)=1. For unary projection or filter use 1+F(A), and use 1
 
 Proof. Count one frame for the current operator. Unary operators suspend one child, while sum finishes one child before starting the next. Product and the first join phase suspend the left enumeration while a right enumeration is active. The second full-join phase exchanges the roles, yielding the same sum. In difference and intersection, the outer A is suspended while a second A computes a rank, or while B computes a total count. These scans are sequential, not concurrent with each other. Maximum union's first phase needs only A; its second phase suspends B while either another B computes a prefix rank or A computes a count. Taking the largest concurrent child sum in each case gives the stated recurrence. Early closing can decrease but never increase these bounds. Shared syntax nodes have separate frames whenever there are concurrent invocations. QED.
 
+Regression witness.  If A is empty and B is a one-element source under four identity projections, then F(A)=1 and F(B)=5.  The actual maximum-union recurrence yields `1+max(1,10,6)=11`; the stale symmetric formula `1+2F(A)+F(B)` would give 8.  Focused tests observe the dynamic peak of 11 and also cover swapped operands and both nesting orders.
+
 ## Theorem R4: zero intermediate materialization above a sufficient memory budget
 
 For fixed P, let a be the maximum tuple arity and b bound the bit-width of each input value and each literal. There is an implementation-dependent constant K and finite program/control storage D(P) such that the abstract replay evaluator needs at most

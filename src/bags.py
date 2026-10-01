@@ -122,7 +122,8 @@ def frame_bound(program: dict) -> int:
             if op=='sum':v=1+max(a,b)
             elif op in ('product','left','full'):v=1+a+b
             elif op in ('diff','inter'):v=1+max(2*a,a+b)
-            else:v=1+max(a,2*b,a+b)
+            elif op=='union':v=1+max(a,2*b,a+b)
+            else:raise ValueError('unrecognized validated operator')
         bounds.append(v)
     return bounds[program['root']]
 

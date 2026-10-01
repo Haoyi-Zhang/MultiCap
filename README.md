@@ -41,13 +41,14 @@ python src/generate_inputs.py --out /tmp/resource-semantics-inputs
 python src/pilot.py
 ```
 
-The two output directories must be absent or empty.  The independent `audit.py`
-command cross-checks input IDs, certificate names, result rows, summary counts,
-negative controls, claim-evidence paths, reference-audit records, external
-resource records, and package cleanliness.  Compare generated input files with
-`inputs/`; the main `check` command validates retained packets and reconciles
-row counts, while `reproduce` reruns the entire bounded campaign.  The pilot is
-a retained early diagnostic and is intentionally separate.
+The two output directories must be absent or empty.  `audit.py` binds each full
+input payload—not merely its ID—to certificate contents, checker returns, CSV
+rows, summary fields, evidence paths, reference records, and package hygiene.
+`audit.py` and `run.py check` both execute every factor schedule through the
+independent phase/address/liveness checker as part of the payload binding.  Compare generated
+input files with `inputs/`; `reproduce` reruns the bounded campaign.  The cache
+pilot is a current recomputation and is intentionally separate; its JSON says
+that the earlier raw record was not retained.
 
 Expected main logical counts are:
 
@@ -56,9 +57,13 @@ Expected main logical counts are:
 - nine occurrence-cache certificates;
 - 64 exact integer-rank packets;
 - all 16 Boolean two-by-two residual functions and 44 capacity variants;
-- 33 negative controls;
-- 30,083 counted validation/transition obligations;
-- 41 focused unit/mutation/integrity tests;
+- 33 legacy controls, split into 12 cache-certificate rejections, eight
+  syntax/type rejections, four semantic differences, two lifecycle tests, and
+  seven positive-source cases;
+- four additional factor-schedule mutation rejections;
+- 30,083 counted validation/transition obligations under the retained legacy
+  counting rule, plus 10,743 event-checked schedules and 313,123 checked events;
+- 57 focused unit/mutation/integrity tests;
 - 81 audited scholarly references, each cited and carrying a persistent
   identifier; and
 - one first-order theorem plus 64 semiring identities checked by the
@@ -89,7 +94,10 @@ The bit-barrier theorem forbids uncharged input-dependent addresses or trace
 lengths, permits output only after the barrier, and charges bit stores and
 loads.  The positive-word theorem permits only static positive natural
 arithmetic and forbids subtraction, division, bit extraction, branches on
-packed values, and readable output.  The occurrence model charges identity
+packed values, and readable output.  Its compiler has exactly two transient
+buffers: prefix T0 accumulates one left summary; the barrier clears T0/T1;
+continuation T0 is the output accumulator and T1 the right linear form; a fixed
+persistent slot is consumed by one fused multiply-add.  The occurrence model charges identity
 records and does not allow multiplicity compression.  Changing any of these
 features changes the capability signature and may change the optimum.
 
@@ -103,26 +111,23 @@ before any external use.  No email, account action, external model API,
 private data, GPU, institutional compute, or human-subject evidence was used.
 
 
-## Independent blind-review robustness check
+## Additional finite validation
+
+The neutral `validation/` directory contains two post-development robustness
+checks and one fail-closed aggregate command.  They are not external review or
+a statistical held-out study.
 
 ```sh
-PYTHONDONTWRITEBYTECODE=1 python3 reviewer/blind_holdout.py --root . --out results/reviewer/blind_holdout.json
+PYTHONDONTWRITEBYTECODE=1 python3 validation/independent_finite_checks.py \
+  --root . --out /tmp/independent-finite-checks.json
+PYTHONDONTWRITEBYTECODE=1 python3 validation/structured_cases.py \
+  --out-dir /tmp/structured-cases
+PYTHONDONTWRITEBYTECODE=1 python3 validation/check_all.py \
+  --out /tmp/artifact-check.json
 ```
 
-This post-development suite is independent of the implementation and is not described as a statistical held-out set. See `reviewer/BLIND-HOLDOUT.md`.
-
-
-## Fresh structured-instance campaign
-
-```sh
-PYTHONDONTWRITEBYTECODE=1 python3 reviewer/fresh_campaign.py --out-dir results/reviewer/fresh-campaign
-```
-
-The campaign provides exact model-relative robustness evidence, not a production throughput benchmark.
-
-
-## Fail-closed final internal gate
-
-```sh
-PYTHONDONTWRITEBYTECODE=1 python3 reviewer/run_final_gate.py --out results/reviewer/final-gate.json
-```
+The independent script imports none of the project implementation and rechecks
+finite residual encodings, all 256 small two-by-two matrices, exact two-slot
+all-pairs costs through four by four, and all 64 retained rank-witness
+equations.  The structured cases are exact model-relative checks, not production
+performance measurements.  See `validation/README.md`.
