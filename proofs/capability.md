@@ -141,9 +141,11 @@ relative to kappa when it either produces a zero-cost certificate whenever one
 exists or returns a checked positive lower-bound witness and a matching optimal
 schedule.
 
-The residual and positive barrier fragments satisfy this relative notion: their
-closed-form optima decide whether zero spill exists and their witnesses compile
-to schedules meeting the lower bound.  The replay fragment supplies a
+The residual compiler and the minimum-width-certified positive synthesis path
+satisfy this relative notion: their closed-form optima decide whether zero
+spill exists and their witnesses compile to schedules meeting the lower bound.
+An arbitrary checked positive factorization gives a feasible schedule, with
+optimality when it fits fast memory or its width is minimum. The replay fragment supplies a
 sufficient zero-derived-store compiler but not a memory-minimal decision
 procedure.  The occurrence cache result is an exact diagnostic for its stated
 record model, not a compiler for all bag programs.

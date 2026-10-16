@@ -102,3 +102,9 @@ claiming a measured speedup.
 ## Provenance and external use
 
 The evidence is not independently blind-reviewed. Authors must inspect and take responsibility for all content and recheck current venue policies before any external use. No email, account action, external model API, private data, GPU, institutional compute, or human-subject evidence was used.
+## Paper diagrams
+
+`plot_schematics.py` draws four capability and transfer relations directly as
+vector PDFs with embedded fonts. Install `requirements-figures.txt` and run
+`python -B check_schematics.py` for deterministic generation and font/vector
+checks. Scientific commands remain standard-library-only.
